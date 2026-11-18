@@ -7,6 +7,10 @@
   constant tables only, not control flow. Native library read at the level of embedded names only.
   Anything marked *names only* needs a proper decompile before it is quoted as fact.
 
+> Update, same day: the scripts have since been recovered to source. The map-to-sky hand-off and the
+> rotation question are written up in `01-star-field-rotation.md`, which supersedes the *names only*
+> transition section below.
+
 ## How the app is built
 
 | Layer | What it is | How readable |
