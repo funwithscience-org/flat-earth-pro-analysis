@@ -50,7 +50,7 @@ calculator for B and C (to be written in this phase).
 ## Phase 2 - Triage the package
 
 `tools/triage.sh vendor/<package>/base.apk` lists native libs, managed assemblies and large assets to
-identify the engine. Unverified guess from the package naming and 235 MB size: Unity.
+identify the engine. (The initial guess of Unity was wrong; it is Godot.)
 
 | If it is | Then |
 |---|---|
@@ -58,6 +58,7 @@ identify the engine. Unverified guess from the package naming and 235 MB size: U
 | Unity, IL2CPP (`libil2cpp.so` + `global-metadata.dat`) | Il2CppDumper for names/signatures, Ghidra for bodies. Class and method names survive; logic is slower to read. |
 | Native Android (Kotlin/Java) | jadx. |
 | Flutter / other | Reassess; black-box evidence carries more weight. |
+| **Actual (free build, 18 Nov 2026): Godot 4** | Shaders are plain text. Scripts are compiled GDScript: names and constants via a small zstd/token-table dump, full source via GDRE Tools. Astronomy is in a native GDExtension (`libFELIBS`); Ghidra if needed. See `analysis/static/00-first-pass.md`. |
 
 Shaders and scene assets (AssetRipper for Unity) matter as much as code: the day/night terminator and
 the map projections are likely shader-side.

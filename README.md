@@ -19,5 +19,7 @@ and which are computed from standard spherical astronomy? Focus area: the sky / 
 - `analysis/star-trails/predictions.md` - computed globe vs literal-map predictions (from `tools/refcalc.py`)
 - `analysis/public-claims.md` - what the developer's listings say the app is
 
-Status (18 Nov 2026): predictions computed and cross-checked; public claims recorded. No binary obtained
-yet, so nothing here is a measurement of the app.
+- `analysis/static/00-first-pass.md` - first static findings on the free Android build
+
+Status (18 Nov 2026): free Android build obtained and given a first static pass. Predictions computed.
+No black-box captures yet; Pro build not yet examined.
