@@ -16,4 +16,8 @@ and which are computed from standard spherical astronomy? Focus area: the sky / 
 - `docs/` - reserved for the published page (GitHub Pages from /docs), once findings are reviewed
 - `vendor/` - the app binaries and decompiled output. **Git-ignored. Never committed.**
 
-Status: scaffold only. No binary obtained yet; nothing in this repo is a finding yet.
+- `analysis/star-trails/predictions.md` - computed globe vs literal-map predictions (from `tools/refcalc.py`)
+- `analysis/public-claims.md` - what the developer's listings say the app is
+
+Status (18 Nov 2026): predictions computed and cross-checked; public claims recorded. No binary obtained
+yet, so nothing here is a measurement of the app.

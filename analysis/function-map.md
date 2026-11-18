@@ -16,6 +16,15 @@ the "look for" column is what would distinguish spherical astronomy from a flat 
 | 9 | Compass and directions | Local compass, direction to bodies | Great-circle initial bearing vs straight-line bearing on the AE map (they differ away from the pole) | Direction to a far southern-hemisphere target |
 | 10 | Time zones, weather, notifications | Utility features | Low priority. Weather is a network call: note the provider, do not probe it | - |
 
+## Notes from the listings (18 Nov 2026)
+
+- The current free Android build calls the sky view "Telescope Mode" and has an object info panel showing
+  RA/Dec, alt/az, distance and angular diameter. Those readouts make items 1, 4 and 7 checkable from the
+  UI alone: record the numbers and compare with `tools/refcalc.py`.
+- "Distance" and "apparent angular diameter" are a new black-box check: what distance does it show for
+  the Sun and Moon, and is the angular diameter constant through the day?
+- Free and Pro Android builds were last updated a year apart and may be different codebases.
+
 ## Per-function write-up template (`analysis/static/NN-name.md`)
 
 - **App version / package / SHA-256:**
