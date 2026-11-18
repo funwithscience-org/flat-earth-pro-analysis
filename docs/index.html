@@ -18,81 +18,160 @@
 <meta property="og:description" content="The Flat Earth app contains no flat-Earth model. Its sky view is a planetarium and its flat map is a globe, unrolled.">
 <meta property="og:url" content="https://funwithscience.net/flat-earth-pro-analysis/">
 <link rel="canonical" href="https://funwithscience.net/flat-earth-pro-analysis/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
 <style>
+  /* Star-atlas palette: cool paper, ink navy, and two working colours that carry meaning.
+     Blue = the sky view. Ochre = the flat map. Used on excerpts, the diagram and the comparison table. */
   :root {
     color-scheme: light dark;
-    --bg: #fafaf7;
-    --fg: #1a1a1a;
-    --muted: #666;
-    --accent: #1e4d8b;
-    --border: #e3e3de;
-    --card-bg: #ffffff;
-    --tint: #eaf1fa;
+    --paper: #f4f6f8;
+    --ink: #14233b;
+    --slate: #56657c;
+    --rule: #d5dde6;
+    --panel: #ffffff;
+    --sky: #2456a6;
+    --sky-wash: #e6eef9;
+    --map: #96630c;
+    --map-wash: #f8efdc;
+    --band: #14233b;
+    --band-ink: #eef3f9;
+    --band-sky: #9cc3ff;
+    --band-map: #f0c36a;
+    --serif: "Source Serif 4", ui-serif, Georgia, "Times New Roman", serif;
+    --mono: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0e1014;
-      --fg: #eaeaea;
-      --muted: #9a9a9a;
-      --accent: #7ab8ff;
-      --border: #262a32;
-      --card-bg: #161a21;
-      --tint: #16263a;
+      --paper: #0f1726;
+      --ink: #e8edf4;
+      --slate: #9aa8bc;
+      --rule: #263247;
+      --panel: #162136;
+      --sky: #8fbaff;
+      --sky-wash: #172a47;
+      --map: #e6b558;
+      --map-wash: #2e2614;
+      --band: #1a2740;
     }
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: ui-serif, Georgia, "Times New Roman", serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--serif); font-size: 1.125rem; line-height: 1.65;
+    font-optical-sizing: auto; -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 3rem; }
-  .crumb { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.85rem; margin-bottom: 2rem; }
-  a { color: var(--accent); }
-  h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.15; margin: 0 0 0.6rem; letter-spacing: -0.01em; }
-  h2 { font-size: 1.45rem; margin: 2.8rem 0 0.8rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
-  .meta { color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.9rem; margin: 0 0 2rem; }
-  .lead { font-size: 1.15rem; }
-  ul, ol { padding-left: 1.3rem; }
-  li { margin: 0.4rem 0; }
-  .tablewrap { overflow-x: auto; margin: 1.2rem 0; }
-  table { border-collapse: collapse; width: 100%; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.9rem; }
-  th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border); }
-  th { font-weight: 600; border-bottom: 2px solid var(--border); }
+  .wrap { max-width: 44rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  a { color: var(--sky); text-underline-offset: 0.15em; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; border-radius: 2px; }
+
+  .crumb { font-size: 0.95rem; margin: 0 0 3.5rem; }
+  .crumb a { color: var(--slate); }
+
+  h1 {
+    font-size: clamp(2.3rem, 6.2vw, 3.6rem); line-height: 1.04; font-weight: 700;
+    letter-spacing: -0.022em; margin: 0 0 1.1rem; max-width: 16ch; text-wrap: balance;
+  }
+  .meta { color: var(--slate); font-size: 0.98rem; margin: 0; max-width: 34rem; }
+
+  /* The one bold element: the line of code the whole page turns on. */
+  .oneline { margin: 2.75rem -1.5rem 3.25rem; background: var(--band); color: var(--band-ink); padding: 2.2rem 1.5rem 1.9rem; }
+  .oneline pre {
+    margin: 0; padding: 0; border: 0; background: none; color: inherit; overflow-x: auto;
+    font-family: var(--mono); font-weight: 600; line-height: 1.35;
+    font-size: clamp(1rem, 4.5vw, 1.9rem); white-space: pre;
+  }
+  .oneline figcaption { margin-top: 1.3rem; color: var(--band-ink); font-size: 1rem; line-height: 1.55; max-width: 36rem; opacity: 0.94; }
+  .oneline .k { font-weight: 600; }
+  .oneline .k.sky { color: var(--band-sky); }
+  .oneline .k.map { color: var(--band-map); }
+  @media (min-width: 50rem) {
+    .oneline { margin-left: -3.5rem; margin-right: -3.5rem; padding: 2.6rem 3.5rem 2.2rem; border-radius: 4px; }
+  }
+
+  h2 {
+    font-size: 1.7rem; line-height: 1.2; font-weight: 700; letter-spacing: -0.012em;
+    margin: 4rem 0 1rem; text-wrap: balance;
+  }
+  h2.first { margin-top: 0; }
+  p { margin: 0 0 1.15rem; }
+  .lead { font-size: 1.32rem; line-height: 1.5; }
+  ul, ol { padding-left: 1.25rem; margin: 0 0 1.15rem; }
+  li { margin: 0.45rem 0; padding-left: 0.2rem; }
+  strong { font-weight: 600; }
+
+  .contents { margin: 0 0 3.5rem; padding: 0; list-style: none; font-size: 0.98rem; display: flex; flex-wrap: wrap; gap: 0.35rem 1.4rem; }
+  .contents li { margin: 0; padding: 0; }
+  .contents a { color: var(--slate); }
+
+  .tablewrap { overflow-x: auto; margin: 1.5rem 0 1.6rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.97rem; line-height: 1.45; }
+  th, td { text-align: left; vertical-align: top; padding: 0.7rem 0.9rem 0.7rem 0; border-bottom: 1px solid var(--rule); }
+  th { font-weight: 600; border-bottom: 2px solid var(--ink); padding-bottom: 0.5rem; }
+  td:first-child { font-weight: 600; }
+  table.versus th:nth-child(2) { color: var(--sky); border-bottom-color: var(--sky); }
+  table.versus th:nth-child(3) { color: var(--map); border-bottom-color: var(--map); }
+  table.versus td:nth-child(2), table.versus td:nth-child(3) { width: 34%; }
+
+  /* Code excerpts: the edge colour says which view the code belongs to. */
   pre {
-    background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
-    padding: 0.9rem 1rem; overflow-x: auto; font-size: 0.82rem; line-height: 1.5; margin: 1rem 0 0.4rem;
+    background: var(--panel); border: 1px solid var(--rule); border-left: 4px solid var(--slate);
+    padding: 0.95rem 1.1rem; overflow-x: auto; margin: 1.4rem 0 0.5rem;
+    font-family: var(--mono); font-size: 0.8rem; line-height: 1.6; tab-size: 4;
   }
-  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; }
-  .src { color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.85rem; margin: 0.3rem 0 1.3rem; }
-  .note {
-    background: var(--tint); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;
-    padding: 0.8rem 1rem; margin: 1.2rem 0; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.92rem;
-  }
-  figure { margin: 1.5rem 0; }
-  figure svg { width: 100%; height: auto; display: block; font-family: ui-sans-serif, system-ui, sans-serif; }
-  figcaption { color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 0.88rem; margin-top: 0.5rem; }
-  footer {
-    margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
-    font-size: 0.85rem; color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif;
-  }
-  footer a { color: var(--muted); }
+  pre.sky { border-left-color: var(--sky); }
+  pre.map { border-left-color: var(--map); }
+  pre + pre { margin-top: 0.6rem; }
+  code { font-family: var(--mono); font-size: 0.86em; }
+  pre code { font-size: inherit; }
+  .src { color: var(--slate); font-size: 0.95rem; line-height: 1.5; margin: 0.5rem 0 1.9rem; }
+  .tag { font-weight: 600; margin-right: 0.35rem; }
+  .tag.sky { color: var(--sky); }
+  .tag.map { color: var(--map); }
+  .tag.shared { color: var(--ink); }
+  .key { color: var(--slate); font-size: 0.95rem; }
+  .key b.sky { color: var(--sky); } .key b.map { color: var(--map); }
+
+  .note { background: var(--sky-wash); padding: 1rem 1.2rem; margin: 1.5rem 0; font-size: 1rem; line-height: 1.55; }
+
+  figure.diagram { margin: 2rem 0 2.2rem; }
+  figure.diagram svg { width: 100%; height: auto; display: block; font-family: var(--serif); }
+  figure.diagram figcaption { color: var(--slate); font-size: 0.95rem; margin-top: 0.8rem; }
+
+  footer { margin-top: 4.5rem; padding-top: 1.4rem; border-top: 1px solid var(--rule); font-size: 0.95rem; color: var(--slate); }
+  footer a { color: var(--slate); }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<p class="crumb"><a href="/">&larr; Fun With Science</a></p>
+<p class="crumb"><a href="/">Fun With Science</a></p>
 
 <header>
   <h1>Inside the Flat Earth app: what the code does</h1>
-  <p class="meta">Published 18 November 2026 &middot; Free Android build 250004, installed from Google Play on 18 November 2026</p>
+  <p class="meta">Published 18 November 2026. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
 </header>
 
-<h2 style="border-top:none;padding-top:0;margin-top:0">The short version</h2>
+<figure class="oneline">
+  <pre><code>float sinAlt = sinLat * sinDec
+    + cosLat * cosDec * cosHA;</code></pre>
+  <figcaption>This line of spherical trigonometry appears twice in the app, character for character (shown here on two lines). <span class="k sky">In the sky view</span> it places every star. <span class="k map">On the flat map</span> it decides where day ends and night begins.</figcaption>
+</figure>
+
+<ul class="contents">
+  <li><a href="#shows">What the app shows you</a></li>
+  <li><a href="#inside">What is inside</a></li>
+  <li><a href="#rotation">Why southern stars turn the other way</a></li>
+  <li><a href="#flyin">The fly-in</a></li>
+  <li><a href="#versus">What the flat map cannot reproduce</a></li>
+  <li><a href="#fair">What this does and does not show</a></li>
+  <li><a href="#sure">How sure we are</a></li>
+</ul>
+
+<h2 class="first">The short version</h2>
 
 <p class="lead">The Flat Earth app contains no flat-Earth model. Every view in it is calculated with standard globe astronomy, and the flat map is one of several ways the app can draw the same globe data.</p>
 
@@ -103,7 +182,7 @@
   <li><strong>The two views cannot be derived from each other.</strong> The sky view gives the right answer. The flat map, taken as a real place, gives a different one.</li>
 </ul>
 
-<h2>What the app shows you</h2>
+<h2 id="shows">What the app shows you</h2>
 
 <p>The app has two views, and you switch between them with one button.</p>
 <div class="tablewrap"><table>
@@ -113,21 +192,22 @@
 </table></div>
 <p>The question we asked: is the sky view what you would see from inside the map view? It is not. They are two separate programs that share a clock and your location.</p>
 
-<h2>What is inside</h2>
+<h2 id="inside">What is inside</h2>
 
 <p>Four parts of the app do the work, and all four use a round Earth.</p>
+<p class="key">Each excerpt below is marked by where it runs: <b class="sky">sky view</b>, <b class="map">map view</b>, or shared by both.</p>
 
 <p><strong>1. The stars in the sky view.</strong> For each star the app takes its catalogue position, your latitude and the time, and works out how high it is and in which direction. This is the textbook conversion used by every planetarium. Nothing from the flat map goes into it: no map position, no height above a plane, no distance across the map.</p>
-<pre><code>float ha = lst - mra;
+<pre class="sky"><code>float ha = lst - mra;
 ...
 float sinAlt = sinLat * sinDec + cosLat * cosDec * cosHA;
 ...
 float az = atan(-cosDec * sinHA, (sinDec - sinLat * sinAlt) / cosLat);</code></pre>
-<pre><code>AzimAlt=raDecl_to_AltAz(mra,mdec,LatLonPresTemp.x,LST).yx;</code></pre>
-<p class="src">From <code>Shader/StarMesh3D.gdshader</code>. <code>mra</code> and <code>mdec</code> are the star's catalogue position, <code>LatLonPresTemp.x</code> is your latitude and <code>LST</code> is local star time. Those four values are everything the star's position depends on.</p>
+<pre class="sky"><code>AzimAlt=raDecl_to_AltAz(mra,mdec,LatLonPresTemp.x,LST).yx;</code></pre>
+<p class="src"><span class="tag sky">Sky view.</span> From <code>Shader/StarMesh3D.gdshader</code>. <code>mra</code> and <code>mdec</code> are the star's catalogue position, <code>LatLonPresTemp.x</code> is your latitude and <code>LST</code> is local star time. Those four values are everything the star's position depends on.</p>
 
 <p><strong>2. Day and night on the flat map.</strong> For every point on the map, the app works out how high the Sun is at that latitude and longitude on a sphere. Above the horizon is drawn as day, below as night. The lit shape on the map is a globe's day side, drawn flat.</p>
-<pre><code>//x: Greenwich Hour Angle, y: sun decl
+<pre class="map"><code>//x: Greenwich Hour Angle, y: sun decl
 uniform vec2 sun_data;
 
 float GetAlt(vec2 LonLat) {
@@ -136,19 +216,19 @@ float GetAlt(vec2 LonLat) {
     float sinAlt = sinLat * sinDec + cosLat * cosDec * cosHA;
     return asind(sinAlt);
 }</code></pre>
-<p class="src">From <code>Shader/include/sun.gdshaderinc</code>. This runs for every point on the map. The script that feeds it passes the Sun as two angles and nothing else:</p>
-<pre><code>var GHA = (TimeEngine.GST - Astronomy.Sun.ApparentGeocentricRA) * 15.0
+<p class="src"><span class="tag map">Map view.</span> From <code>Shader/include/sun.gdshaderinc</code>. This runs for every point on the map. The script that feeds it passes the Sun as two angles and nothing else:</p>
+<pre class="map"><code>var GHA = (TimeEngine.GST - Astronomy.Sun.ApparentGeocentricRA) * 15.0
 fe_mesh_mat.set_shader_parameter("sun_data", Vector2(GHA, Astronomy.Sun.ApparentGeocentricDeclination))</code></pre>
-<p class="src">From <code>Script/MapView.gd</code> (recovered script). The map's Sun has a direction but no height and no distance. The icon on the map marks where that direction is straight overhead.</p>
+<p class="src"><span class="tag map">Map view.</span> From <code>Script/MapView.gd</code> (recovered script). The map's Sun has a direction but no height and no distance. The icon on the map marks where that direction is straight overhead.</p>
 
 <p><strong>3. The map itself.</strong> The Earth picture is an ordinary latitude and longitude image. The app pushes it through a projection, the same kind of maths an atlas uses to flatten a globe onto a page. The flat circular map is one setting. The app's own list of projections also includes &ldquo;orthographic&rdquo;, which is the Earth drawn as a ball.</p>
-<pre><code>vec2 UV_to_spherical(vec2 uv) {
+<pre class="map"><code>vec2 UV_to_spherical(vec2 uv) {
     ...
     float lon = x * PI;        // Longitude from -PI to PI
     float lat = y * PI*0.5;  // Latitude from -PI/2 to PI/2
     return vec2(lon, lat);
 }</code></pre>
-<p class="src">From <code>Shader/include/commons.gdshaderinc</code>: every point of the map picture is first turned back into longitude and latitude. The projection names stored in <code>Script/data/ProjData.gd</code> are: Azimuthal Equidistant, Equirectangular, Extrapolated Equidistant, Extrapolated Equidistant2, Azimuthal EqualArea, orthographic, Cassini.</p>
+<p class="src"><span class="tag map">Map view.</span> From <code>Shader/include/commons.gdshaderinc</code>: every point of the map picture is first turned back into longitude and latitude. The projection names stored in <code>Script/data/ProjData.gd</code> are: Azimuthal Equidistant, Equirectangular, Extrapolated Equidistant, Extrapolated Equidistant2, Azimuthal EqualArea, orthographic, Cassini.</p>
 
 <p><strong>4. Eclipses.</strong> To shade an eclipse on the map, the code uses three numbers:</p>
 <div class="tablewrap"><table>
@@ -157,61 +237,61 @@ fe_mesh_mat.set_shader_parameter("sun_data", Vector2(GHA, Astronomy.Sun.Apparent
   <tr><td>0.99664719</td><td>How much shorter the Earth is pole to pole than across the equator</td></tr>
   <tr><td>About 150 million km</td><td>The distance to the Sun</td></tr>
 </table></div>
-<pre><code>const highp float FLATTENING    = 0.99664719;
+<pre class="map"><code>const highp float FLATTENING    = 0.99664719;
 const highp float EARTH_RADIUS_M  = 6378140.0; // meters — for the Height ratio
 const highp float EARTH_RADIUS_KM = 6378.14;   // km — for the parallax (sin pi) term
 const highp float AU2KM = 1.496e+8;</code></pre>
-<p class="src">From <code>Shader/Projection.gdshader</code>, the shader that draws the flat map. The comments are the developer's.</p>
+<p class="src"><span class="tag map">Map view.</span> From <code>Shader/Projection.gdshader</code>, the shader that draws the flat map. The comments are the developer's.</p>
 
 <p>The star catalogue it ships (83,500 stars) is the standard HYG catalogue, which lists each star's distance. The scripts ask the planet engine for Sun-centred positions and convert between kilometres and astronomical units.</p>
 <pre><code>const AU2KM: float = 149597870.691
 
 var HeliocentricRectangularEcliptical: Vector3:
     get: return _pe[&amp;"TrueHeliocentricRectangularEcliptical"]</code></pre>
-<p class="src">From <code>Script/Astronomy/Astronomy.gd</code> and <code>Script/Astronomy/SSBody.gd</code> (recovered scripts).</p>
+<p class="src"><span class="tag shared">Shared.</span> From <code>Script/Astronomy/Astronomy.gd</code> and <code>Script/Astronomy/SSBody.gd</code> (recovered scripts).</p>
 
-<h2>Why the stars turn the other way in the south</h2>
+<h2 id="rotation">Why the stars turn the other way in the south</h2>
 
 <p>The app never sets a direction of rotation. There is no &ldquo;clockwise&rdquo; or &ldquo;counter-clockwise&rdquo; in it, and no rule for the southern hemisphere. The direction falls out of the geometry, and the two views use different geometry.</p>
 
-<figure>
-<svg viewBox="0 0 760 290" role="img" aria-label="Both views share the stars and the clock; only the sky view uses your latitude" font-size="13">
+<figure class="diagram">
+<svg viewBox="0 0 760 260" role="img" aria-label="Both views share the stars and the clock; only the sky view uses your latitude" font-size="14">
   <defs>
-    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker>
-    <marker id="arr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--slate)"/></marker>
+    <marker id="arr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--sky)"/></marker>
   </defs>
-  <g fill="none" stroke="var(--muted)" stroke-width="1.25">
-    <path d="M274 66H450" marker-end="url(#arr)"/>
-    <path d="M274 88H362V180H450" marker-end="url(#arr)"/>
+  <g fill="none" stroke="var(--slate)" stroke-width="1.25">
+    <path d="M276 54H448" marker-end="url(#arr)"/>
+    <path d="M276 78H362V172H448" marker-end="url(#arr)"/>
   </g>
-  <path d="M274 204H450" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr-a)"/>
-  <rect x="24" y="30" width="250" height="72" rx="8" fill="none" stroke="var(--muted)" stroke-width="1.25"/>
-  <text x="40" y="54" font-weight="600" fill="var(--fg)">Shared by both views</text>
-  <text x="40" y="70" font-size="11.5" fill="var(--muted)">Star catalogue: where each star is</text>
-  <text x="40" y="86" font-size="11.5" fill="var(--muted)">Clock: how far the sky has turned</text>
-  <rect x="24" y="156" width="250" height="72" rx="8" fill="var(--tint)" stroke="var(--accent)" stroke-width="2"/>
-  <text x="40" y="180" font-weight="600" fill="var(--fg)">Sky view only: your latitude</text>
-  <text x="40" y="196" font-size="11.5" fill="var(--fg)">Sets how the axis of the sky is tilted</text>
-  <text x="40" y="212" font-size="11.5" fill="var(--fg)">against your horizon</text>
-  <rect x="450" y="22" width="286" height="88" rx="8" fill="none" stroke="var(--muted)" stroke-width="1.25"/>
-  <text x="466" y="46" font-weight="600" fill="var(--fg)">Map view</text>
-  <text x="466" y="62" font-size="11.5" fill="var(--muted)">Each star drawn over the place where</text>
-  <text x="466" y="78" font-size="11.5" fill="var(--muted)">it is overhead.</text>
-  <text x="466" y="94" font-size="11.5" fill="var(--fg)">One centre, one direction for everyone</text>
-  <rect x="450" y="148" width="286" height="88" rx="8" fill="none" stroke="var(--muted)" stroke-width="1.25"/>
-  <text x="466" y="172" font-weight="600" fill="var(--fg)">Sky view</text>
-  <text x="466" y="188" font-size="11.5" fill="var(--muted)">Each star drawn at its height and</text>
-  <text x="466" y="204" font-size="11.5" fill="var(--muted)">direction from where you stand.</text>
-  <text x="466" y="220" font-size="11.5" fill="var(--fg)">Centre and direction depend on latitude</text>
+  <path d="M276 198H448" fill="none" stroke="var(--sky)" stroke-width="2" marker-end="url(#arr-a)"/>
+  <rect x="2" y="16" width="274" height="84" fill="var(--panel)" stroke="var(--slate)" stroke-width="1.25"/>
+  <text x="20" y="44" font-weight="600" fill="var(--ink)">Shared by both views</text>
+  <text x="20" y="64" font-size="12.5" fill="var(--slate)">Star catalogue: where each star is</text>
+  <text x="20" y="82" font-size="12.5" fill="var(--slate)">Clock: how far the sky has turned</text>
+  <rect x="2" y="150" width="274" height="84" fill="var(--sky-wash)" stroke="var(--sky)" stroke-width="2"/>
+  <text x="20" y="178" font-weight="600" fill="var(--ink)">Sky view only: your latitude</text>
+  <text x="20" y="198" font-size="12.5" fill="var(--ink)">Sets how the axis of the sky is tilted</text>
+  <text x="20" y="216" font-size="12.5" fill="var(--ink)">against your horizon</text>
+  <rect x="450" y="6" width="308" height="100" fill="var(--map-wash)" stroke="var(--map)" stroke-width="2"/>
+  <text x="468" y="34" font-weight="600" fill="var(--ink)">Map view</text>
+  <text x="468" y="54" font-size="12.5" fill="var(--ink)">Each star drawn over the place where</text>
+  <text x="468" y="72" font-size="12.5" fill="var(--ink)">it is overhead.</text>
+  <text x="468" y="92" font-size="12.5" font-weight="600" fill="var(--ink)">One centre, one direction for everyone</text>
+  <rect x="450" y="140" width="308" height="100" fill="var(--sky-wash)" stroke="var(--sky)" stroke-width="2"/>
+  <text x="468" y="168" font-weight="600" fill="var(--ink)">Sky view</text>
+  <text x="468" y="188" font-size="12.5" fill="var(--ink)">Each star drawn at its height and</text>
+  <text x="468" y="206" font-size="12.5" fill="var(--ink)">direction from where you stand.</text>
+  <text x="468" y="226" font-size="12.5" font-weight="600" fill="var(--ink)">Centre and direction depend on latitude</text>
 </svg>
 <figcaption>Both views read the same star catalogue and the same clock. The sky view takes one more input, your latitude, and that single input is what reverses the turning in the south.</figcaption>
 </figure>
 
 <p><strong>On the map,</strong> each star is drawn over the spot on Earth where it is directly overhead. As the clock runs, every star's spot slides west by the same amount. On the flat circular map that looks like one disc of stars turning around the North Pole. One centre, one direction, the same for everybody.</p>
-<pre><code>ra_n=repeat(ra_n+GST-12.0,24.0);
+<pre class="map"><code>ra_n=repeat(ra_n+GST-12.0,24.0);
 ...
 VERTEX = VERTEX * (quad_scale * local_quad_scale) + fe_mesh_project(uv,transition);</code></pre>
-<p class="src">From <code>Shader/StarMesh2D.gdshader</code>. <code>GST</code> is Greenwich star time. It is added to every star's position alike, then the star is placed with <code>fe_mesh_project</code>, the same function that places the land. Latitude does not appear.</p>
+<p class="src"><span class="tag map">Map view.</span> From <code>Shader/StarMesh2D.gdshader</code>. <code>GST</code> is Greenwich star time. It is added to every star's position alike, then the star is placed with <code>fe_mesh_project</code>, the same function that places the land. Latitude does not appear.</p>
 
 <p><strong>In the sky view,</strong> the app adds one thing the map never uses: your latitude. Latitude sets how the sky's turning axis is tilted against your horizon.</p>
 <ul>
@@ -222,14 +302,14 @@ VERTEX = VERTEX * (quad_scale * local_quad_scale) + fe_mesh_project(uv,transitio
 <pre><code>GST = Astronify.GreenwitchSiderealtime(JD_TT, true)
 ...
 RenderingServer.global_shader_parameter_set("LST", Astronomy.astro.LocalSiderealTime(TimeEngine.GST, User.Location.LONGITUDE))</code></pre>
-<p class="src">From <code>Script/TimeEngine.gd</code> (recovered script): the clock both views share. The sky view then combines it with latitude in the formula shown earlier, and the Milky Way background does the same:</p>
-<pre><code>vec3 eq_dir = eyedir_to_equatorial(eyedir, LatLonPresTemp.x, -LST);</code></pre>
-<p class="src">From <code>Shader/sky.gdshader</code>. A search of every script and shader for &ldquo;hemisphere&rdquo;, &ldquo;clockwise&rdquo; or a test on the sign of latitude finds nothing that sets a direction.</p>
+<p class="src"><span class="tag shared">Shared.</span> From <code>Script/TimeEngine.gd</code> (recovered script): the clock both views share. The sky view then combines it with latitude in the formula shown earlier, and the Milky Way background does the same:</p>
+<pre class="sky"><code>vec3 eq_dir = eyedir_to_equatorial(eyedir, LatLonPresTemp.x, -LST);</code></pre>
+<p class="src"><span class="tag sky">Sky view.</span> From <code>Shader/sky.gdshader</code>. A search of every script and shader for &ldquo;hemisphere&rdquo;, &ldquo;clockwise&rdquo; or a test on the sign of latitude finds nothing that sets a direction.</p>
 
 <p>So the southern rotation is not programmed in. It is what a round-Earth formula gives when the latitude is negative.</p>
 <p>This is the part a flat Earth cannot supply. Latitude can only tilt the sky's axis if &ldquo;up&rdquo; points in a different direction at each latitude. On a flat surface everyone's &ldquo;up&rdquo; is parallel. A flat Earth could put the centre of rotation farther away, but could not tilt it, and could never bring a second centre into view in the south.</p>
 
-<h2>The fly-in is a zoom and a cut</h2>
+<h2 id="flyin">The fly-in is a zoom and a cut</h2>
 
 <p>Pressing the sky button looks like flying down into the map. In the code it is three steps:</p>
 <ol>
@@ -245,13 +325,13 @@ if tn != null and tn.is_valid() and tn.is_running():
     await tn.finished
     MapView.instance.visible = false
     Ui.sky_view_ui_enable(true)</code></pre>
-<p class="src">From <code>Script/bottom_bar.gd</code> (recovered script), the handler for the sky button: zoom the 2D camera, load the sky scene, wait for the zoom, hide the map.</p>
+<p class="src"><span class="tag shared">Shared.</span> From <code>Script/bottom_bar.gd</code> (recovered script), the handler for the sky button: zoom the 2D camera, load the sky scene, wait for the zoom, hide the map.</p>
 <p>The two scenes have different cameras. Only the clock and your latitude and longitude pass from one to the other. Nothing on the map, including the Sun and star positions drawn over it, is carried into the sky.</p>
 
-<h2>What the flat map cannot reproduce</h2>
+<h2 id="versus">What the flat map cannot reproduce</h2>
 
 <p>If the flat map were a real place, with the Sun and stars a few thousand kilometres above it, the sky would look different from what the app's own sky view shows. These figures compare standard globe astronomy with the app's map taken literally.</p>
-<div class="tablewrap"><table>
+<div class="tablewrap"><table class="versus">
   <tr><th>Test</th><th>Globe astronomy</th><th>The app's map, taken literally</th></tr>
   <tr><td>Sunrise in Sydney, 21 December</td><td>29&deg; south of east, on the horizon</td><td>56&deg; north of east, 8&ndash;16&deg; above the horizon</td></tr>
   <tr><td>Centre of the night sky's rotation, from Sydney</td><td>Due south, 34&deg; up</td><td>Due north, 12&ndash;24&deg; up</td></tr>
@@ -262,7 +342,7 @@ if tn != null and tn.is_valid() and tn.is_running():
 </table></div>
 <div class="note">The left column is checked against an independent astronomy library to within 0.007 degrees. The right column depends on how high you place the Sun, so it is shown as a range for 3,000 to 6,000 km. <strong>Neither column has been measured in the app yet.</strong> The code says the sky view will match the left column; screen recordings to confirm it are in progress and will be added here.</div>
 
-<h2>What this does and does not show</h2>
+<h2 id="fair">What this does and does not show</h2>
 
 <p><strong>It shows that the app has no flat model inside it.</strong> Every view is globe astronomy. The flat look comes from the choice of map projection.</p>
 <p><strong>It does not show that the developer is hiding this.</strong> The evidence points the other way:</p>
@@ -275,7 +355,7 @@ if tn != null and tn.is_valid() and tn.is_running():
 <p><strong>The criticism that holds</strong> is narrower. The app is named Flat Earth and sold to a flat-Earth audience, and reviews on the <a href="https://apps.apple.com/us/app/flat-earth-pro/id1664580677" target="_blank" rel="noopener">App Store</a> show users taking it as confirmation. Nothing in the listings tells them that the sky view cannot come from the map.</p>
 <p><strong>It does not, by itself, prove the shape of the Earth.</strong> A flat-Earth reply is that the formulas are only patterns fitted to what we observe. The answer to that is the table above: no single flat layout reproduces what the sky view shows, which is why the app has to use the globe formulas to get the sky right.</p>
 
-<h2>How sure we are</h2>
+<h2 id="sure">How sure we are</h2>
 
 <div class="tablewrap"><table>
   <tr><th>Finding</th><th>Confidence</th><th>Why</th></tr>
@@ -288,7 +368,7 @@ if tn != null and tn.is_valid() and tn.is_running():
 <p>The app was installed from Google Play in the normal way. If you are the developer, or you find an error on this page, corrections are welcome.</p>
 
 <footer>
-  <a href="/">Fun With Science</a> &middot; Rigorous, data-first critiques of fringe scientific claims.
+  <a href="/">Fun With Science</a>: rigorous, data-first critiques of fringe scientific claims.
 </footer>
 
 </div>
