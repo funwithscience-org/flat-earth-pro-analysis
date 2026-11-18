@@ -26,6 +26,8 @@
 - Start with the **free** build `com.OProjects.FLS`: its listing says it includes both Map Mode and the
   sky simulation, so the star-trails question may not need the paid build at all. Buy
   `com.OProjects.FLSPro` only if the extra projections matter (they probably do for phase 2, item 2).
+- No Android device needed: `tools/emulator-setup.md` + `tools/setup_emulator.sh` set up an emulator
+  with Google Play on the Mac. It doubles as the capture rig for phase 1.
 - `tools/pull_apk.sh <package>` pulls base + split APKs via adb and records SHA-256, versionName and
   versionCode in `vendor/<package>/MANIFEST.txt`. Record the version in every finding.
 - iOS build: skip for static work (App Store binaries are encrypted; removing that is a line not worth
