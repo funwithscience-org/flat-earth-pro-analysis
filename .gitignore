@@ -1,0 +1,18 @@
+# Never commit the app, its assets, or decompiled output (third-party copyrighted material)
+vendor/
+*.apk
+*.apks
+*.xapk
+*.aab
+*.ipa
+*.dex
+*.so
+*.dll
+global-metadata.dat
+decompiled/
+ghidra_projects/
+# local
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
