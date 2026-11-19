@@ -113,6 +113,15 @@ says it should. And the icon is carried rigidly round the pole: its lit side tur
 screen while the marker travelled 35 degrees round the map. The app's clock did not change with the
 location, and both Sun-marker longitudes fit UTC, so the clock is UTC or device time.
 
+A third capture, location Cape Town, same clock reading of 22:46
+(`S7_a_map_iphone_capetown_20261121T2246Z.png`): lit side at bearing 254, Sun marker at 339, the same
+as the Sydney capture to within measuring error. Three locations, one map Moon.
+
+Still to capture for this instant: the sky or tracking view. Expected at 22:46 UTC, measuring the lit
+side counter-clockwise from straight up as the observer sees it: London, Moon 47 degrees up in the
+south-west, lit side at 233 (lower right); Cape Town, Moon 29 degrees up in the north-west, lit side
+at 112 (left, a little below level). About 121 degrees apart.
+
 This settles the open point above: the icon is **not** mirrored. Its lit side sits at the celestial
 position angle, with east on the map's east side. On screen the lit side faces the lower left while
 the Sun marker is to the upper left, close to a right angle apart.
