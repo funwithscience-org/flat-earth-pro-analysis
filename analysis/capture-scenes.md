@@ -165,13 +165,43 @@ farther place is lit.
 
 ---
 
+## S7. The Moon: same phase, three orientations  (supplement)
+
+**Point.** The phase is the same in every view and is correct. The orientation is corrected for the
+observer in the sky view and the tracking view, and not at all on the map. On the map the lit side
+does not face the map's Sun.
+
+**Setup.** **18 Nov 2026, 00:00 UTC** (just after first quarter, Moon 55% lit).
+
+**Shots.**
+| Shot | What |
+|---|---|
+| a | Map view, zoomed so the Moon icon and the Sun marker are both in frame. Then zoom in on the Moon icon until the lit side is clear |
+| b | Tracking view of the Moon from London, with the parallactic-angle option on, then off |
+| c | Tracking view of the Moon from Sydney, same instant, option on, then off |
+| d | Sky view from each place if the Moon is above the horizon there; otherwise step time until it is, and note the time |
+
+**Expect.**
+- Same lit fraction in every shot.
+- With the option on, London and Sydney show the Moon turned differently (roughly upside down
+  relative to each other when each sees it near its highest). With it off, both show the same picture.
+- On the map: the lit side points about 249 degrees from map-north (west, a little south). The Sun
+  marker lies about 318 degrees from map-north (north-west). They miss by about 69 degrees.
+- **Record which side of the map icon is lit** (toward or away from the Sun marker's side). The code
+  does not settle whether the icon is drawn mirrored; see `static/02-moon-phase-orientation.md`.
+
+**Line.** One Moon, one phase, but you need to know where the observer stands to draw it the right way
+up. The map cannot know that, so its Moon is the view from the centre of the Earth, and its lit side
+does not even face the map's own Sun.
+
+---
+
 ## Not in this list
 
 - Switching projections (AE to orthographic and back) would show the map is a re-skinnable view of the
   same longitude/latitude data, but the listing says extra projections are Pro-only. Add as S7 if the
   Pro build is bought.
-- Moon orientation from London vs Sydney (inverted) is a good scene but has no computed numbers yet.
 
 ## Order of value if time is short
 
-S1, S2, S3, S5. S4 and S6 are strong but each takes longer to set up.
+S1, S2, S3, S5. S4, S6 and S7 are strong but each takes longer to set up.
