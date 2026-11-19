@@ -152,7 +152,7 @@
 
 <header>
   <h1>Inside the Flat Earth app: what the code does</h1>
-  <p class="meta">Published 18 November 2026, Moon section added 19 November. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
+  <p class="meta">Published 18 November 2026, Moon and Sun-marker sections added 19 November. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
 </header>
 
 <figure class="oneline">
@@ -195,7 +195,7 @@
 
 <h2 id="inside">What is inside</h2>
 
-<p>Four parts of the app do the work, and all four use a round Earth.</p>
+<p>Five parts of the app do the work, and all five use a round Earth. The last one, the Sun on the flat map, uses a round Earth going round the Sun.</p>
 <p class="key">Each excerpt below is marked by where it runs: <b class="sky">sky view</b>, <b class="map">map view</b>, or shared by both.</p>
 
 <p><strong>1. The stars in the sky view.</strong> For each star the app takes its catalogue position, your latitude and the time, and works out how high it is and in which direction. This is the textbook conversion used by every planetarium. Nothing from the flat map goes into it: no map position, no height above a plane, no distance across the map.</p>
@@ -261,6 +261,31 @@ float capricorn = 1.0-latitudeLine(geo_pos, -23.5,  0.8, true, lw); </code></pre
   <tr><td>Tropic of Capricorn</td><td>36,770 km</td><td>about 79,290 km</td></tr>
 </table></div>
 <p class="src">The middle column is 2&pi; &times; 6378.14 km &times; the function above at 23.5 degrees, which is 5,852 km from the axis. The app does not store that figure; it is what its formula evaluates to. The right column assumes the usual scale for this kind of map, about 111 km per degree measured out from the pole. The app states no scale, but its drawing does fix the ratio: the Capricorn ring is 1.71 times as long as the Cancer ring.</p>
+
+<p id="sun"><strong>5. The Sun on the flat map.</strong> This one is on the main map, not only in the fly-in views. The Sun's marker is not read from a list of positions. At each moment the app works out where the Earth is on its orbit round the Sun, turns that round to get the Sun's direction as seen from the Earth, and marks the spot on a turning Earth that lies beneath it.</p>
+<pre class="map"><code>GeographicPos = Astronify.Equatorial2Geographic(TimeEngine.GST, ApparentGeocentricRA, ApparentGeocentricDeclination)</code></pre>
+<p class="src"><span class="tag map">Map view.</span> From <code>Script/Astronomy/SSBody.gd</code> (recovered script). The marker's latitude is the Sun's declination. Its longitude is the Sun's right ascension minus Greenwich star time.</p>
+<p>Those two angles come from the app's compiled astronomy engine. These are the engine's own names for some of what it reports:</p>
+<pre><code>TrueHeliocentricEclipticalLongitude
+TrueHeliocentricEclipticalLatitude
+TrueHeliocentricDistance
+TrueHeliocentricRectangularEcliptical
+TrueGeocentricRectangularEcliptical
+ApparentGeocentricRA
+ApparentGeocentricDeclination</code></pre>
+<p class="src"><span class="tag shared">Engine.</span> Text stored in <code>libFELIBS</code>. Heliocentric means measured with the Sun at the centre; geocentric means as seen from the Earth.</p>
+<p>The engine also holds tables of numbers. One of them begins:</p>
+<pre><code>175347046      0            0
+  3341656      4.6692568    6283.07585
+    34894      4.6261      12566.1517
+     3497      2.7441       5753.3849</code></pre>
+<p class="src"><span class="tag shared">Engine.</span> Stored values at offset <code>0x1095b8</code>. These are the opening terms of VSOP87, the standard series for the Earth's position on its orbit round the Sun. They were checked against the <a href="https://ftp.imcce.fr/pub/ephem/planets/vsop87/VSOP87D.ear" target="_blank" rel="noopener">Earth file published by the IMCCE</a>, whose header reads &ldquo;heliocentric&rdquo;, and they match the shortened version used with Meeus, <cite>Astronomical Algorithms</cite>, term for term. The figure 6283.07585 is how fast the Earth goes round, in radians per thousand years. A second table, which also matches, holds the Earth's distance from the Sun.</p>
+<p>One short routine in the engine reads that table and then does a single thing to the result:</p>
+<pre><code>call   Earth's longitude on its orbit     ; reads the table above
+add    180.0                              ; turn round to face the other way
+wrap   into 0 to 360</code></pre>
+<p class="src"><span class="tag shared">Engine.</span> The routine at <code>0x21ad04</code>, twenty machine instructions, summarised; the wording is ours and the constants 180.0 and 360.0 are in the code. The Sun's direction is the Earth's position plus 180 degrees. We traced the calls from the routine that fills in <code>ApparentGeocentricRA</code> down to this one and on to the Earth tables.</p>
+<p>So the Sun that circles over the flat map is placed there by the Earth going round the Sun.</p>
 
 <p>The star catalogue it ships (83,500 stars) is the standard HYG catalogue, which lists each star's distance. The scripts ask the planet engine for Sun-centred positions and convert between kilometres and astronomical units.</p>
 <pre><code>const AU2KM: float = 149597870.691
@@ -448,6 +473,7 @@ if tn != null and tn.is_valid() and tn.is_running():
   <tr><th>Finding</th><th>Confidence</th><th>Why</th></tr>
   <tr><td>Sky view stars, day and night shading, map projection, eclipse numbers</td><td>High</td><td>Read directly from the app's drawing code, which is plain text in the package</td></tr>
   <tr><td>Rotation direction and the fly-in sequence</td><td>High, with one caveat</td><td>Read from the app's scripts, recovered with our own decoder and not yet cross-checked with the standard tool (GDRE Tools)</td></tr>
+  <tr><td>Where the Sun marker on the map comes from</td><td>High</td><td>The scripts, the engine's own names, its tables checked against the published series, and the call path traced through the engine. One limit: tracing shows the route exists, not which branch runs for each body</td></tr>
   <tr><td>Which way up the Moon is drawn in each view</td><td>High</td><td>Read from the scripts, and the map behaviour confirmed by three screen captures from the iPhone app (a different build from the Android one whose code was read)</td></tr>
   <tr><td>The engine that computes Sun, Moon and planet positions</td><td>Medium</td><td>The scripts show what the app asks it to compute and how the answers are used. The engine itself is compiled, so its internal formulas were not read</td></tr>
   <tr><td>The paid Pro version and the iPhone version</td><td>Not examined</td><td>They may be older or different code</td></tr>
