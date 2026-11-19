@@ -152,7 +152,7 @@
 
 <header>
   <h1>Inside the Flat Earth app: what the code does</h1>
-  <p class="meta">Published 18 November 2026. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
+  <p class="meta">Published 18 November 2026, Moon section added 19 November. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
 </header>
 
 <figure class="oneline">
@@ -166,6 +166,7 @@
   <li><a href="#inside">What is inside</a></li>
   <li><a href="#rotation">Why southern stars turn the other way</a></li>
   <li><a href="#flyin">The fly-in</a></li>
+  <li><a href="#moon">The Moon</a></li>
   <li><a href="#versus">What the flat map cannot reproduce</a></li>
   <li><a href="#fair">What this does and does not show</a></li>
   <li><a href="#sure">How sure we are</a></li>
@@ -328,6 +329,74 @@ if tn != null and tn.is_valid() and tn.is_running():
 <p class="src"><span class="tag shared">Shared.</span> From <code>Script/bottom_bar.gd</code> (recovered script), the handler for the sky button: zoom the 2D camera, load the sky scene, wait for the zoom, hide the map.</p>
 <p>The two scenes have different cameras. Only the clock and your latitude and longitude pass from one to the other. Nothing on the map, including the Sun and star positions drawn over it, is carried into the sky.</p>
 
+<h2 id="moon">The Moon: one phase, three ways of turning it</h2>
+
+<p>The Moon's phase is computed correctly and is the same in every view. What differs is which way up it is drawn, and on the flat map the lit side does not face the map's own Sun.</p>
+
+<p>One shader draws the Moon everywhere, as a lit ball: it is told which point of the Moon faces the Earth and which point has the Sun overhead. That is real three-body geometry, and it is why the phase is right. Then one line decides how far to turn the picture on screen:</p>
+<pre><code>data2gpu[vData.PA] = wrapf(sso.position_angle - (sso.ParallacticAngle if EnableParallacticAngle else 0.0), 0.0, 360.0)</code></pre>
+<p class="src"><span class="tag shared">Shared.</span> From <code>Script/Utility.gd</code> (recovered script). <code>ParallacticAngle</code> is how far the sky is turned for one particular observer. It is worked out from your latitude, your longitude and the time.</p>
+
+<div class="tablewrap"><table>
+  <tr><th>View</th><th>Turned for the observer?</th><th>Result</th></tr>
+  <tr><td>Sky view</td><td>Always</td><td>Correct for where you stand</td></tr>
+  <tr><td>Moon tracking view</td><td>A switch the user can set</td><td>On: as you see it. Off: celestial north at the top</td></tr>
+  <tr><td>Flat map</td><td>Never. The code passes a fixed <code>false</code></td><td>One picture for everyone, with its top pointed at the map's North Pole</td></tr>
+</table></div>
+
+<p>So the Moon on the flat map is the view from the centre of the Earth. It is nobody's actual view, and the map has no way to do better: the same Moon looks turned by a different amount from every place on Earth, and a single flat picture can only show one.</p>
+
+<figure class="diagram">
+<svg viewBox="0 0 560 220" role="img" aria-label="The same Moon at the same moment, as it should appear from London and from Cape Town" font-size="16">
+  <defs><marker id="m-sky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--sky)"/></marker></defs>
+  <g transform="translate(140,104)">
+    <g transform="rotate(-143)"><circle r="62" fill="#e3e7ec" stroke="var(--slate)" stroke-width="1"/><path d="M0 -62A62 62 0 0 1 0 62A49.0 62 0 0 0 0 -62Z" fill="#3b4658"/><path d="M-72 0H-108" stroke="var(--sky)" stroke-width="3" marker-end="url(#m-sky)"/></g>
+  </g>
+  <g transform="translate(420,104)">
+    <g transform="rotate(-22)"><circle r="62" fill="#e3e7ec" stroke="var(--slate)" stroke-width="1"/><path d="M0 -62A62 62 0 0 1 0 62A49.0 62 0 0 0 0 -62Z" fill="#3b4658"/><path d="M-72 0H-108" stroke="var(--sky)" stroke-width="3" marker-end="url(#m-sky)"/></g>
+  </g>
+  <text x="140" y="206" text-anchor="middle" font-size="19" font-weight="600" fill="var(--ink)">From London</text>
+  <text x="420" y="206" text-anchor="middle" font-size="19" font-weight="600" fill="var(--ink)">From Cape Town</text>
+</svg>
+<figcaption>Expected appearance on 21 November 2026 at 22:46 UTC, from the standard calculation. From London the Moon is 47° up in the south-west with its lit side to the lower right. From Cape Town it is 29° up in the north-west with its lit side to the left. Same Moon, same phase, turned about 121 degrees. The arrow marks the lit side. Captures of the app's sky view for this moment are still to come.</figcaption>
+</figure>
+
+<p><strong>What we measured.</strong> Three screen captures of the map, with the app's location set to London, then Sydney, then Cape Town. The Moon icon's lit side sat at the same bearing from map-north each time: 256, 254 and 254 degrees, against a calculated 253 to 254. Changing where you are changes nothing on the map.</p>
+
+<figure class="diagram">
+<svg viewBox="0 0 620 720" role="img" aria-label="Screen capture of the app's flat map: the Moon icon's lit side points about 81 degrees away from the Sun marker" font-size="21">
+  <defs>
+    <marker id="m-lit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9cc3ff"/></marker>
+    <marker id="m-sun" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f0c36a"/></marker>
+  </defs>
+  <image href="moon-map-capture.jpg" width="620" height="720"/>
+  <circle cx="498" cy="122" r="102" fill="none" stroke="#eef3f9" stroke-width="2"/>
+  <path d="M440 595L96 114" stroke="#f0c36a" stroke-width="4" stroke-dasharray="10 8" fill="none" marker-end="url(#m-sun)"/>
+  <path d="M440 595L288 671" stroke="#9cc3ff" stroke-width="5" fill="none" marker-end="url(#m-lit)"/>
+  <g font-weight="600" paint-order="stroke" stroke="#0b1422" stroke-width="5" stroke-linejoin="round">
+    <text x="150" y="250" fill="#f0c36a">to the map's Sun</text>
+    <text x="110" y="700" fill="#9cc3ff">where the lit side points</text>
+    <text x="498" y="252" text-anchor="middle" fill="#eef3f9">Moon icon, enlarged</text>
+  </g>
+</svg>
+<figcaption>The app's flat map on 21 November 2026 at 20:18 UTC (iPhone app). The dark sliver is on the icon's upper right, so its lit side faces lower left. The Sun marker is to the upper left. Measured off this capture, the lit side misses the Sun marker by 81 degrees; the calculation gave 84.</figcaption>
+</figure>
+
+<p><strong>Why it misses.</strong> In the sky, the Moon's lit side points at the Sun. The flat circular map does not keep those directions, so once the picture is placed on the map, its lit side points somewhere else. Over one lunar month the miss runs from almost nothing at new Moon to 50 to 85 degrees around the quarters and the gibbous phases.</p>
+
+<div class="tablewrap"><table>
+  <tr><th>Date, 00:00 UTC</th><th>Lit fraction</th><th>Lit side misses the map's Sun by</th></tr>
+  <tr><td>12 November 2026</td><td>7%</td><td>12°</td></tr>
+  <tr><td>18 November 2026</td><td>55%</td><td>69°</td></tr>
+  <tr><td>22 November 2026</td><td>90%</td><td>84°</td></tr>
+  <tr><td>30 November 2026</td><td>64%</td><td>61°</td></tr>
+  <tr><td>8 December 2026</td><td>1%</td><td>1°</td></tr>
+</table></div>
+
+<p>If the Moon on the map were a ball lit by the Sun on the map, its bright side would face that Sun. It was computed for a Sun about 150 million km away, and then placed on the map.</p>
+
+<p class="key">A fair reply is that the map Moon is only an icon for tonight's phase. That is true, and it is the point: the phase it shows needs a round Moon and a distant Sun to calculate, and turning it the right way up needs the observer's latitude.</p>
+
 <h2 id="versus">What the flat map cannot reproduce</h2>
 
 <p>If the flat map were a real place, with the Sun and stars a few thousand kilometres above it, the sky would look different from what the app's own sky view shows. These figures compare standard globe astronomy with the app's map taken literally.</p>
@@ -361,6 +430,7 @@ if tn != null and tn.is_valid() and tn.is_running():
   <tr><th>Finding</th><th>Confidence</th><th>Why</th></tr>
   <tr><td>Sky view stars, day and night shading, map projection, eclipse numbers</td><td>High</td><td>Read directly from the app's drawing code, which is plain text in the package</td></tr>
   <tr><td>Rotation direction and the fly-in sequence</td><td>High, with one caveat</td><td>Read from the app's scripts, recovered with our own decoder and not yet cross-checked with the standard tool (GDRE Tools)</td></tr>
+  <tr><td>Which way up the Moon is drawn in each view</td><td>High</td><td>Read from the scripts, and the map behaviour confirmed by three screen captures from the iPhone app (a different build from the Android one whose code was read)</td></tr>
   <tr><td>The engine that computes Sun, Moon and planet positions</td><td>Medium</td><td>The scripts show what the app asks it to compute and how the answers are used. The engine itself is compiled, so its internal formulas were not read</td></tr>
   <tr><td>The paid Pro version and the iPhone version</td><td>Not examined</td><td>They may be older or different code</td></tr>
 </table></div>
