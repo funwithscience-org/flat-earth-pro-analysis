@@ -190,6 +190,12 @@ does not face the map's Sun.
 - **Record which side of the map icon is lit** (toward or away from the Sun marker's side). The code
   does not settle whether the icon is drawn mirrored; see `static/02-moon-phase-orientation.md`.
 
+**Follow-up at the instant already captured (21 Nov 2026, 20:18 UTC).** Shot a is done
+(`S7_a_map_iphone_20261121T2018Z.png`). To pair with it, take the sky or tracking view at that same
+instant from London (Moon 49 degrees up in the south-south-east; lit side should be on the right) and
+from Cape Town (33.92 S, 18.42 E; Moon 43 degrees up, due north; lit side should be on the left).
+Sydney will not work for this instant: the Moon is below its horizon.
+
 **Line.** One Moon, one phase, but you need to know where the observer stands to draw it the right way
 up. The map cannot know that, so its Moon is the view from the centre of the Earth, and its lit side
 does not even face the map's own Sun.
