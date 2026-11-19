@@ -244,6 +244,24 @@ const highp float EARTH_RADIUS_KM = 6378.14;   // km — for the parallax (sin p
 const highp float AU2KM = 1.496e+8;</code></pre>
 <p class="src"><span class="tag map">Map view.</span> From <code>Shader/Projection.gdshader</code>, the shader that draws the flat map. The comments are the developer's.</p>
 
+<p><strong>The two tropics come out the same size.</strong> On the map itself the tropics are drawn by latitude alone, at 23.5 degrees north and south. Nothing in the app gives the map a distance scale.</p>
+<pre class="map"><code>float cancer    = 1.0-latitudeLine(geo_pos,  23.5,  0.8, true,  lw);   // 0.8° dashed
+float capricorn = 1.0-latitudeLine(geo_pos, -23.5,  0.8, true, lw); </code></pre>
+<p class="src"><span class="tag map">Map view.</span> From <code>Shader/Projection.gdshader</code>, lines 406 and 407.</p>
+<p>The eclipse code is the one place where the app has to commit to real sizes on the Earth. To work out where the Moon's shadow falls it needs each place's distance from the Earth's axis, and it takes that from a function of latitude built on the cosine. A cosine is the same for a latitude north or south, so the Tropic of Cancer and the Tropic of Capricorn get the same value.</p>
+<pre class="map"><code>highp float RhoCosThetaPrime(highp float latDeg, highp float heightM) {
+    highp float lat = DEG2RAD * latDeg;
+    highp float U = atan(FLATTENING * tan(lat));
+    return cos(U) + (heightM / EARTH_RADIUS_M * cos(lat));
+}</code></pre>
+<p class="src"><span class="tag map">Map view.</span> From <code>Shader/Projection.gdshader</code>, lines 94 to 98, used with <code>EARTH_RADIUS_KM</code> in the lines that follow.</p>
+<div class="tablewrap"><table class="versus">
+  <tr><th>Distance around</th><th>What the eclipse code works out to</th><th>The flat map, taken literally</th></tr>
+  <tr><td>Tropic of Cancer</td><td>36,770 km</td><td>about 46,460 km</td></tr>
+  <tr><td>Tropic of Capricorn</td><td>36,770 km</td><td>about 79,290 km</td></tr>
+</table></div>
+<p class="src">The middle column is 2&pi; &times; 6378.14 km &times; the function above at 23.5 degrees, which is 5,852 km from the axis. The app does not store that figure; it is what its formula evaluates to. The right column assumes the usual scale for this kind of map, about 111 km per degree measured out from the pole. The app states no scale, but its drawing does fix the ratio: the Capricorn ring is 1.71 times as long as the Cancer ring.</p>
+
 <p>The star catalogue it ships (83,500 stars) is the standard HYG catalogue, which lists each star's distance. The scripts ask the planet engine for Sun-centred positions and convert between kilometres and astronomical units.</p>
 <pre><code>const AU2KM: float = 149597870.691
 
