@@ -58,6 +58,10 @@ Checked by a separate agent that opened the sources; it did not open the Meeus b
 | Moon longitude / distance terms, first six pairs | Match, 6 of 6 | soniakeys/meeus `moonposition.go`, Meeus Table 47.A |
 | 20.49552, 125.04452, 149597870.691, 6378.14, 0.99664719 | Confirmed | AA+, soniakeys/meeus, IERS Conventions 2003 Table 3.2 (the km/au value is DE405's) |
 
+Second check, same day: the IMCCE file was downloaded directly and compared by script. Both headers read
+"EARTH ... HELIOCENTRIC DYNAMICAL ECLIPTIC AND EQUINOX OF THE DATE", and the four largest terms of the
+L and R series, rounded to units of 1e-8, equal the app's stored values.
+
 Two details from the check. The fourth term in our table (3497) is fifth in the raw IMCCE file; having
 it fourth is the amplitude-sorted order of the Meeus truncation, so the engine carries that truncation
 and not the full file. And 6283.07585 is the Earth's sidereal mean motion in radians per Julian
