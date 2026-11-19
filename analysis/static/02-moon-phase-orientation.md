@@ -2,8 +2,7 @@
 
 Build: `com.OProjects.FLS` versionCode 250004. Sources: `Script/Utility.gd` (`process_SSOscop`),
 `Script/Astronomy/SSOScop.gd`, `Script/SSOScopView.gd`, `Script/Astronomy/SSBody.gd` (recovered scripts)
-and `Shader/SSObject.gdshader` (plain text). Confidence: high on what goes in; medium on the exact
-on-screen handedness, which needs a capture (scene S7).
+and `Shader/SSObject.gdshader` (plain text). Confidence: high on what goes in. The on-screen handedness was settled by a capture; see below.
 
 ## How the Moon is drawn
 
@@ -80,6 +79,29 @@ for a Sun 150 million km away and then pasted onto the map.
 These numbers assume the map icon is drawn with east on the map's east side. If the app instead
 draws the Moon as seen from below (east and west swapped, as on the sky), the lit side points to the
 other side and the miss is larger. Which of the two it does is the open point for the capture.
+
+## First capture: the prediction holds  (19 Nov 2026)
+
+`evidence/captures/S7_a_map_iphone_20261121T2018Z.png`: map view from the iPhone app, app time
+2026/11/21 20:18. Measured off the screenshot (pole position judged by eye, so allow a few degrees):
+
+| Quantity | Predicted for 21 Nov 2026 20:18 UTC | Measured from the capture |
+|---|---|---|
+| Moon marker position | 12.4 N, 13.2 E | Over the Niger / Nigeria / Chad area |
+| Sun marker, bearing from the Moon marker | 337 | 337 |
+| Lit side of the Moon icon, bearing | 253 | 256 |
+| Lit side misses the Sun marker by | 84 | 81 |
+| Lit fraction | 0.89 | about 0.88 (pixel count, rough) |
+
+Bearings are degrees from map-north (toward the pole) through map-east.
+
+This settles the open point above: the icon is **not** mirrored. Its lit side sits at the celestial
+position angle, with east on the map's east side. On screen the lit side faces the lower left while
+the Sun marker is to the upper left, close to a right angle apart.
+
+Caveats: this is the iPhone app, not the Android build whose code was read, and the app version was
+not recorded. The clock is assumed to be UTC (the device was in London in November, where local time
+is UTC). One instant only.
 
 ## The other side
 
