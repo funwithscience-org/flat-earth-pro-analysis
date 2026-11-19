@@ -95,6 +95,24 @@ other side and the miss is larger. Which of the two it does is the open point fo
 
 Bearings are degrees from map-north (toward the pole) through map-east.
 
+A second capture with the app's location changed to Sydney
+(`S7_a_map_iphone_sydney_20261121T2246Z.png`). Its clock reads 22:46, two and a half hours later, and
+the Sun and Moon markers have moved about 37 degrees round the map to match:
+
+| Quantity | Predicted for 22:46 UTC | Measured, location Sydney |
+|---|---|---|
+| Moon marker longitude | 22.5 W | 22.3 W |
+| Sun marker longitude | 165.0 W | 165.7 W |
+| Sun marker, bearing from the Moon marker | 338 | 339 |
+| Lit side of the Moon icon, bearing | 254 | 254 |
+| Lit side misses the Sun marker by | 84 | 85 |
+
+Two things follow. Changing the location from London to Sydney leaves the map Moon unchanged in the
+map's own frame (256 then 254, against a predicted 253 then 254), as the hard-coded `false` in the code
+says it should. And the icon is carried rigidly round the pole: its lit side turned 33 degrees on
+screen while the marker travelled 35 degrees round the map. The app's clock did not change with the
+location, and both Sun-marker longitudes fit UTC, so the clock is UTC or device time.
+
 This settles the open point above: the icon is **not** mirrored. Its lit side sits at the celestial
 position angle, with east on the map's east side. On screen the lit side faces the lower left while
 the Sun marker is to the upper left, close to a right angle apart.
