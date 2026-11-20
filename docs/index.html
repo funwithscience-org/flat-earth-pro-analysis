@@ -152,7 +152,7 @@
 
 <header>
   <h1>Inside the Flat Earth app: what the code does</h1>
-  <p class="meta">Published 18 November 2026, Moon and Sun-marker sections added 19 November, sunrise-from-a-height added 20 November. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
+  <p class="meta">Published 18 November 2026, Moon and Sun-marker sections added 19 November, sunrise-from-a-height and lunar eclipses added 20 November. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
 </header>
 
 <figure class="oneline">
@@ -195,7 +195,7 @@
 
 <h2 id="inside">What is inside</h2>
 
-<p>Six parts of the app do the work, and all six use a round Earth. The fifth, the Sun on the flat map, uses a round Earth going round the Sun. The sixth uses the Earth's radius to time the sunrise.</p>
+<p>Seven parts of the app do the work, and all seven use a round Earth. The fifth, the Sun on the flat map, uses a round Earth going round the Sun. The sixth uses the Earth's radius to time the sunrise. The seventh draws the Earth's shadow on the Moon.</p>
 <p class="key">Each excerpt below is marked by where it runs: <b class="sky">sky view</b>, <b class="map">map view</b>, or shared by both.</p>
 
 <p><strong>1. The stars in the sky view.</strong> For each star the app takes its catalogue position, your latitude and the time, and works out how high it is and in which direction. This is the textbook conversion used by every planetarium. Nothing from the flat map goes into it: no map position, no height above a plane, no distance across the map.</p>
@@ -303,6 +303,33 @@ wrap   into 0 to 360</code></pre>
   <tr><td>3,000 m</td><td>1.76&deg;</td></tr>
 </table></div>
 <p>On a flat surface there is no such drop. However high you climb, a flat horizon stays level, and there would be nothing to correct. The app corrects for it, with the size of the globe written into the code. We have read this in the code and not yet tested it in the running app.</p>
+
+<p id="lunar"><strong>7. Lunar eclipses.</strong> The app lists lunar eclipses and, during one, darkens the Moon in both the sky view and the flat map. It does this by working out where the Earth's shadow is and how wide it is.</p>
+<pre><code>_led = Astronify.compute_lunar_eclipse_shadow(TimeEngine.JD_TT, true)
+
+lesm.set_shader_parameter("MOON_POS", [Vector4(_led.xShadow, _led.yShadow, lunar_umbral_occlustion, 0.0)])
+lesm.set_shader_parameter("MOON_RAD", [Vector2(_led.penumbralRadius, _led.umbralRadius)])</code></pre>
+<p class="src"><span class="tag shared">Shared.</span> From <code>Script/Eclipse.gd</code> (recovered script, shortened). The engine returns a shadow position and two radii, and the script hands them to the shader that draws the Moon. The same routine is registered for the sky view and for the map.</p>
+<p>Inside the engine, the shadow is placed and sized like this:</p>
+<pre><code>Sun = Earth's position round the Sun, turned by 180 degrees
+
+shadow RA  = Sun RA + 12 hours
+shadow Dec = -(Sun Dec)
+
+Sun radius   = 0.26656 degrees / distance to the Sun
+Sun parallax = 0.0024428 degrees / distance to the Sun
+
+umbra    = 1.01 * Moon parallax - Sun radius + Sun parallax
+penumbra = 1.01 * Moon parallax + Sun radius + Sun parallax</code></pre>
+<p class="src"><span class="tag shared">Engine.</span> The routine at <code>0x1fec00</code>, summarised; the wording is ours. The numbers are in the code. It begins by calling the same three routines for the Earth's position that place the Sun on the flat map.</p>
+<p>The shadow sits at the point of the sky exactly opposite the Sun: twelve hours round, and as far south as the Sun is north. That is where the shadow of the Earth falls if the Earth is between the Sun and the Moon.</p>
+<p>The width comes from parallax. The Moon's parallax is the angle the Earth's radius covers as seen from the Moon, so it is the size of the Earth measured at the Moon's distance. The formula is the textbook one for the shadow of a ball lit by a larger ball. The factor 1.01 is the usual small allowance for the Earth's atmosphere, which makes the shadow slightly wider than the solid Earth alone would.</p>
+<p>The shader then tints the Moon a dark red, shading from the edge of the penumbra to the edge of the umbra:</p>
+<pre><code>vec3 ec = mix (vec3(0.141, 0.035, 0.039),vec3(0.05),umb_Occl);
+float d = length(uv - sp);
+float t = clamp((penumbral - d) / (penumbral - umbral), 0.0, 1.0);</code></pre>
+<p class="src"><span class="tag shared">Shared.</span> From <code>Shader/SSObject.gdshader</code>, as shipped. The shadow is drawn as a circle.</p>
+<p>The dates of lunar eclipses can be predicted from cycles alone, without any picture of what causes them. The app goes further than dates. To draw the eclipse it puts a round shadow, the size of the Earth, opposite the Sun. We have read this in the code and not yet watched an eclipse in the running app.</p>
 
 <p>The star catalogue it ships (83,500 stars) is the standard HYG catalogue, which lists each star's distance. The scripts ask the planet engine for Sun-centred positions and convert between kilometres and astronomical units.</p>
 <pre><code>const AU2KM: float = 149597870.691
@@ -492,6 +519,7 @@ if tn != null and tn.is_valid() and tn.is_running():
   <tr><td>Rotation direction and the fly-in sequence</td><td>High, with one caveat</td><td>Read from the app's scripts, recovered with our own decoder and not yet cross-checked with the standard tool (GDRE Tools)</td></tr>
   <tr><td>Where the Sun marker on the map comes from</td><td>High</td><td>The scripts, the engine's own names, its tables checked against the published series, and the call path traced through the engine. One limit: tracing shows the route exists, not which branch runs for each body</td></tr>
   <tr><td>Sunrise and sunset times from a height</td><td>High for the formula, untested in the app</td><td>Read instruction by instruction in the engine, constants included. The Moon takes a separate branch that was not read</td></tr>
+  <tr><td>Lunar eclipse shadow: opposite the Sun, sized from the Earth</td><td>High for the formula, untested in the app</td><td>Read instruction by instruction in the engine, constants included. The routine that lists eclipse dates was not read</td></tr>
   <tr><td>Which way up the Moon is drawn in each view</td><td>High</td><td>Read from the scripts, and the map behaviour confirmed by three screen captures from the iPhone app (a different build from the Android one whose code was read)</td></tr>
   <tr><td>The engine that computes Sun, Moon and planet positions</td><td>Medium</td><td>The scripts show what the app asks it to compute and how the answers are used. The engine itself is compiled, so its internal formulas were not read</td></tr>
   <tr><td>The paid Pro version and the iPhone version</td><td>Not examined</td><td>They may be older or different code</td></tr>
