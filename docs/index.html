@@ -330,6 +330,7 @@ float d = length(uv - sp);
 float t = clamp((penumbral - d) / (penumbral - umbral), 0.0, 1.0);</code></pre>
 <p class="src"><span class="tag shared">Shared.</span> From <code>Shader/SSObject.gdshader</code>, as shipped. The shadow is drawn as a circle.</p>
 <p>The dates of lunar eclipses can be predicted from cycles alone, without any picture of what causes them. The app goes further than dates. To draw the eclipse it puts a round shadow, the size of the Earth, opposite the Sun. We have read this in the code and not yet watched an eclipse in the running app.</p>
+<p class="src">Credit: the question of how the app handles a lunar eclipse was raised by <a href="https://www.tiktok.com/@andrew_in_real_life">@andrew_in_real_life</a> on TikTok.</p>
 
 <p>The star catalogue it ships (83,500 stars) is the standard HYG catalogue, which lists each star's distance. The scripts ask the planet engine for Sun-centred positions and convert between kilometres and astronomical units.</p>
 <pre><code>const AU2KM: float = 149597870.691
