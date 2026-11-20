@@ -152,7 +152,7 @@
 
 <header>
   <h1>Inside the Flat Earth app: what the code does</h1>
-  <p class="meta">Published 18 November 2026, Moon and Sun-marker sections added 19 November. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
+  <p class="meta">Published 18 November 2026, Moon and Sun-marker sections added 19 November, sunrise-from-a-height added 20 November. Based on the free Android version, build 250004, installed from Google Play the same day.</p>
 </header>
 
 <figure class="oneline">
@@ -195,7 +195,7 @@
 
 <h2 id="inside">What is inside</h2>
 
-<p>Five parts of the app do the work, and all five use a round Earth. The last one, the Sun on the flat map, uses a round Earth going round the Sun.</p>
+<p>Six parts of the app do the work, and all six use a round Earth. The fifth, the Sun on the flat map, uses a round Earth going round the Sun. The sixth uses the Earth's radius to time the sunrise.</p>
 <p class="key">Each excerpt below is marked by where it runs: <b class="sky">sky view</b>, <b class="map">map view</b>, or shared by both.</p>
 
 <p><strong>1. The stars in the sky view.</strong> For each star the app takes its catalogue position, your latitude and the time, and works out how high it is and in which direction. This is the textbook conversion used by every planetarium. Nothing from the flat map goes into it: no map position, no height above a plane, no distance across the map.</p>
@@ -286,6 +286,23 @@ add    180.0                              ; turn round to face the other way
 wrap   into 0 to 360</code></pre>
 <p class="src"><span class="tag shared">Engine.</span> The routine at <code>0x21ad04</code>, twenty machine instructions, summarised; the wording is ours and the constants 180.0 and 360.0 are in the code. The Sun's direction is the Earth's position plus 180 degrees. We traced the calls from the routine that fills in <code>ApparentGeocentricRA</code> down to this one and on to the Earth tables.</p>
 <p>So the Sun that circles over the flat map is placed there by the Earth going round the Sun.</p>
+
+<p id="height"><strong>6. Sunrise and sunset from a height.</strong> The app lets you enter your height above sea level, and it uses that height to time sunrise and sunset. It does so with the radius of the Earth.</p>
+<pre><code>Astronify.get_celestial_body_events(id, ..., User.Location.LONGITUDE, User.Location.LATITUDE, User.Location.Height)</code></pre>
+<p class="src"><span class="tag shared">Shared.</span> From <code>Script/ui_horizontal_graph.gd</code> (recovered script, shortened): your height is handed to the engine routine that finds rising and setting times.</p>
+<p>Inside the engine, that routine decides how far below level the Sun must be to count as rising or setting:</p>
+<pre><code>if height &gt; 0:
+    dip = acos( 6371008.0 / (6371008.0 + height) )
+    rising and setting altitude = -0.8333 degrees - dip</code></pre>
+<p class="src"><span class="tag shared">Engine.</span> The routine at <code>0x172428</code>, summarised; the wording is ours. The numbers are in the code: 6371008.0 is stored as <code>0x41584DB000000000</code>, and the routine calls <code>acos</code>. The figure &minus;0.8333 is the standard allowance for the Sun's size and for refraction.</p>
+<p>6,371,008 metres is the mean radius of the Earth. The formula is the dip of the horizon: how far the horizon drops below level for someone standing above a ball of that radius. The higher you stand, the further round the ball you can see, so the Sun appears earlier and leaves later.</p>
+<div class="tablewrap"><table>
+  <tr><th>Height above sea level</th><th>Horizon drops by</th></tr>
+  <tr><td>100 m</td><td>0.32&deg;</td></tr>
+  <tr><td>1,000 m</td><td>1.02&deg;</td></tr>
+  <tr><td>3,000 m</td><td>1.76&deg;</td></tr>
+</table></div>
+<p>On a flat surface there is no such drop. However high you climb, a flat horizon stays level, and there would be nothing to correct. The app corrects for it, with the size of the globe written into the code. We have read this in the code and not yet tested it in the running app.</p>
 
 <p>The star catalogue it ships (83,500 stars) is the standard HYG catalogue, which lists each star's distance. The scripts ask the planet engine for Sun-centred positions and convert between kilometres and astronomical units.</p>
 <pre><code>const AU2KM: float = 149597870.691
@@ -474,6 +491,7 @@ if tn != null and tn.is_valid() and tn.is_running():
   <tr><td>Sky view stars, day and night shading, map projection, eclipse numbers</td><td>High</td><td>Read directly from the app's drawing code, which is plain text in the package</td></tr>
   <tr><td>Rotation direction and the fly-in sequence</td><td>High, with one caveat</td><td>Read from the app's scripts, recovered with our own decoder and not yet cross-checked with the standard tool (GDRE Tools)</td></tr>
   <tr><td>Where the Sun marker on the map comes from</td><td>High</td><td>The scripts, the engine's own names, its tables checked against the published series, and the call path traced through the engine. One limit: tracing shows the route exists, not which branch runs for each body</td></tr>
+  <tr><td>Sunrise and sunset times from a height</td><td>High for the formula, untested in the app</td><td>Read instruction by instruction in the engine, constants included. The Moon takes a separate branch that was not read</td></tr>
   <tr><td>Which way up the Moon is drawn in each view</td><td>High</td><td>Read from the scripts, and the map behaviour confirmed by three screen captures from the iPhone app (a different build from the Android one whose code was read)</td></tr>
   <tr><td>The engine that computes Sun, Moon and planet positions</td><td>Medium</td><td>The scripts show what the app asks it to compute and how the answers are used. The engine itself is compiled, so its internal formulas were not read</td></tr>
   <tr><td>The paid Pro version and the iPhone version</td><td>Not examined</td><td>They may be older or different code</td></tr>
